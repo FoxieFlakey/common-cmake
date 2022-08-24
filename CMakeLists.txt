@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
 include(./build.cmake)
+set(CURRENT_BASE_PATH "${CMAKE_CURRENT_LIST_DIR}")
 
 # Source of truth for version is 
 # NOT HERE its in Kconfig file
