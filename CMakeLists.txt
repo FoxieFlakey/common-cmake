@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-include(./build.cmake)
+include(${CURRENT_BASE_PATH}/build.cmake)
 set(CURRENT_BASE_PATH "${CMAKE_CURRENT_LIST_DIR}")
 
 # Source of truth for version is 
@@ -24,8 +24,8 @@ configure_file(
   ${PROJECT_BINARY_DIR}/suppressions/UBSan.supp
 )
 
-include(scripts/process_dot_config.cmake)
-include(scripts/compiler_and_link_flags.cmake)
+include(${CURRENT_BASE_PATH}/scripts/process_dot_config.cmake)
+include(${CURRENT_BASE_PATH}/scripts/compiler_and_link_flags.cmake)
 
 set(BUILD_LIB_NAME ${PROJECT_NAME})
 set(BUILD_EXE_NAME ${PROJECT_NAME}_${CONFIG_VERSION_MAJOR}.${CONFIG_VERSION_MINOR})
