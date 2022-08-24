@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.18)
 
+# Needed
+cmake_policy(SET CMP0048 NEW)
+
 include(build.cmake)
 set(CURRENT_BASE_PATH "${CMAKE_CURRENT_LIST_DIR}")
 
