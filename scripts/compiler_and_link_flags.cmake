@@ -1,6 +1,6 @@
 include_guard()
 
-include(scripts/process_dot_config.cmake)
+include(${CURRENT_BASE_PATH}/scripts/process_dot_config.cmake)
 
 add_library(ProjectCommonFlags INTERFACE)
 
