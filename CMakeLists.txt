@@ -67,10 +67,10 @@ target_link_libraries(Executable Project_Objects)
 include(GNUInstallDirs)
 
 if (BUILD_INSTALL_EXECUTABLE)
-  get_property(a TARGET Executable PROPERTY LOCATION)
-  message(${a})
+  #get_property(a TARGET Executable PROPERTY LOCATION)
+  #message(${a})
   install(
-    FILES ${a} 
+    FILES $<TARGET_FILE:Executable>
     DESTINATION ${CMAKE_INSTALL_BINDIR}/${BUILD_EXE_NAME}
     PERMISSIONS 
       WORLD_READ    GROUP_READ    OWNER_READ      
