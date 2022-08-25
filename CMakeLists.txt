@@ -71,7 +71,7 @@ if (BUILD_INSTALL_EXECUTABLE)
   #message(${a})
   install(
     FILES $<TARGET_FILE:Executable>
-    DESTINATION ${CMAKE_INSTALL_BINDIR}/${BUILD_EXE_NAME}
+    DESTINATION ${CMAKE_INSTALL_BINDIR}/${BUILD_EXE_NAME}.elf
     PERMISSIONS 
       WORLD_READ    GROUP_READ    OWNER_READ      
                                   OWNER_WRITE
