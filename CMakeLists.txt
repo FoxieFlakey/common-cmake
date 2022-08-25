@@ -69,9 +69,17 @@ include(GNUInstallDirs)
 if (BUILD_INSTALL_EXECUTABLE)
   #get_property(a TARGET Executable PROPERTY LOCATION)
   #message(${a})
+
+  add_custom_command(
+    TARGET Executable POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy
+      $<TARGET_FILE:Executable>
+      ${PROJECT_BINARY_DIR}/${BUILD_EXE_NAME}
+   )
+
   install(
-    FILES $<TARGET_FILE:Executable>
-    DESTINATION ${CMAKE_INSTALL_BINDIR}/${BUILD_EXE_NAME}.elf
+    FILES ${PROJECT_BINARY_DIR}/${BUILD_EXE_NAME}
+    DESTINATION ${CMAKE_INSTALL_BINDIR}/
     PERMISSIONS 
       WORLD_READ    GROUP_READ    OWNER_READ      
                                   OWNER_WRITE
