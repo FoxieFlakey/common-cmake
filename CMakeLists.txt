@@ -75,7 +75,7 @@ if (BUILD_INSTALL_EXECUTABLE)
       COMMAND ${CMAKE_COMMAND} -E copy
       $<TARGET_FILE:Executable>
       ${PROJECT_BINARY_DIR}/${BUILD_EXE_NAME}
-   )
+  )
 
   install(
     FILES ${PROJECT_BINARY_DIR}/${BUILD_EXE_NAME}
@@ -105,7 +105,15 @@ if (BUILD_IS_LIBRARY)
   )
 
   # Install pkgconfig file
-  configure_file(package.pc.in
+  set(PKGCONFIG_NAME ${CURRENT_BASE_PATH}/package.pc.in)
+
+  # Use project's pkgconfig instead 
+  # buildsystem provided
+  if (EXISTS ${PROJECT_SOURCE_DIR}/package.pc.in)
+    set(PKGCONFIG_NAME ${PROJECT_SOURCE_DIR}/package.pc.in)  
+  endif()
+
+  configure_file(${PKGCONFIG_NAME}
     ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc @ONLY)
   install(
     FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc
