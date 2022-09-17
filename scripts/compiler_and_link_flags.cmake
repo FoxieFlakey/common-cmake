@@ -71,8 +71,8 @@ endif()
 
 target_link_libraries(ProjectCommonFlags INTERFACE BlocksRuntime)
 target_link_libraries(ProjectCommonFlags INTERFACE pthread)
-target_link_libraries(ProjectCommonFlags INTERFACE protobuf-c)
 
+target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_BINARY_DIR}")
 target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_BINARY_DIR}/src")
 target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_SOURCE_DIR}/src")
 target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_SOURCE_DIR}/src/collection")
