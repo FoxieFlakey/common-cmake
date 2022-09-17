@@ -56,7 +56,7 @@ if (DEFINED CONFIG_TSAN)
   target_link_options(ProjectCommonFlags INTERFACE "-fsanitize=thread")
 endif()
 
-if (DEFINED CONFIG_XRAY)
+if (DEFINED CONFIG_LLVM_XRAY)
   target_compile_options(ProjectCommonFlags INTERFACE "-fxray-instrument")
   target_compile_options(ProjectCommonFlags INTERFACE "-fxray-instruction-threshold=1")
   target_link_options(ProjectCommonFlags INTERFACE "-fxray-instrument")
