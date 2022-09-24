@@ -56,7 +56,7 @@ if (DEFINED CONFIG_TSAN)
   target_link_options(ProjectCommonFlags INTERFACE "-fsanitize=thread")
 endif()
 
-if (DEFINED CONFIG_XRAY)
+if (DEFINED CONFIG_LLVM_XRAY)
   target_compile_options(ProjectCommonFlags INTERFACE "-fxray-instrument")
   target_compile_options(ProjectCommonFlags INTERFACE "-fxray-instruction-threshold=1")
   target_link_options(ProjectCommonFlags INTERFACE "-fxray-instrument")
@@ -71,8 +71,8 @@ endif()
 
 target_link_libraries(ProjectCommonFlags INTERFACE BlocksRuntime)
 target_link_libraries(ProjectCommonFlags INTERFACE pthread)
-target_link_libraries(ProjectCommonFlags INTERFACE protobuf-c)
 
+target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_BINARY_DIR}")
 target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_BINARY_DIR}/src")
 target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_SOURCE_DIR}/src")
 target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_SOURCE_DIR}/src/collection")
