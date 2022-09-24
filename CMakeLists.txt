@@ -3,10 +3,14 @@ cmake_minimum_required(VERSION 3.18)
 include(build.cmake)
 set(CURRENT_BASE_PATH "${CMAKE_CURRENT_LIST_DIR}")
 
+if (NOT DEFINED BUILD_LANG)
+  set(BUILD_LANG "C")
+endif()
+
 # Source of truth for version is 
 # NOT HERE its in Kconfig file
 project(${BUILD_PROJECT_NAME} VERSION 1.0.0
-                 LANGUAGES C)
+       LANGUAGES ${BUILD_LANG})
 
 if (NOT CMAKE_C_COMPILER_ID MATCHES "Clang")
   message(FATAL_ERROR "Non clang compiler unsupported")
