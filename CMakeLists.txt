@@ -7,6 +7,12 @@ if (NOT DEFINED BUILD_LANG)
   set(BUILD_LANG "C")
 endif()
 
+include(${CURRENT_BASE_PATH}/util.cmake)
+if (DEFINED BUILD_PROTOBUF_FILES)
+  util_protobuf_generate_c(PROTO_SRC PROTO_HEADERS ${BUILD_PROTOBUF_FILES})
+  list(APPEND ${BUILD_SOURCES} ${PROTO_SRC})
+endif()
+
 # Source of truth for version is 
 # NOT HERE its in Kconfig file
 project(${BUILD_PROJECT_NAME} VERSION 1.0.0
