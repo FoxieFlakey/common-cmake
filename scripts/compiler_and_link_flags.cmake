@@ -77,4 +77,5 @@ target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_BINARY_DIR}/s
 target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_SOURCE_DIR}/src")
 target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_SOURCE_DIR}/src/collection")
 target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_SOURCE_DIR}/include")
+target_include_directories(ProjectCommonFlags INTERFACE ${BUILD_INCLUDE_DIRS})
 
