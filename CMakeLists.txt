@@ -10,7 +10,6 @@ endif()
 include(${CURRENT_BASE_PATH}/util.cmake)
 if (DEFINED BUILD_PROTOBUF_FILES)
   util_protobuf_generate_c(PROTO_SRC PROTO_HEADERS ${BUILD_PROTOBUF_FILES})
-  list(APPEND ${BUILD_SOURCES} ${PROTO_SRC})
 endif()
 
 # Source of truth for version is 
@@ -43,7 +42,7 @@ set(BUILD_EXE_NAME ${PROJECT_NAME}_${CONFIG_VERSION_MAJOR}.${CONFIG_VERSION_MINO
 configure_file(src/config.h src/processed_config.h)
 configure_file(${PROJECT_SOURCE_DIR}/.config ${PROJECT_BINARY_DIR}/.config)
 
-add_library(Project_Objects OBJECT ${BUILD_SOURCES})
+add_library(Project_Objects OBJECT ${BUILD_SOURCES} ${PROTO_SRC})
 
 find_package(PkgConfig REQUIRED)
 function (AddPkgConfigLib name spec)
