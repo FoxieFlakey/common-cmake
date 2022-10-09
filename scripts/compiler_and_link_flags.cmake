@@ -37,7 +37,7 @@ endif()
 
 if (DEFINED BUILD_LDFLAGS)
   separate_arguments(tmp UNIX_COMMAND ${BUILD_LDFLAGS})
-  target_compile_options(ProjectCommonFlags INTERFACE ${tmp})
+  target_link_options(ProjectCommonFlags INTERFACE ${tmp})
 endif()
 
 if (DEFINED BUILD_IS_KERNEL)
