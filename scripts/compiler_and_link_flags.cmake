@@ -19,7 +19,7 @@ target_compile_options(ProjectCommonFlags INTERFACE "-fno-optimize-sibling-calls
 target_link_options(ProjectCommonFlags INTERFACE "-fPIC")
 
 if (DEFINED BUILD_IS_KERNEL)
-  target_compile_options(ProjectCommonFlags INTERFACE "-ffrestanding")
+  target_compile_options(ProjectCommonFlags INTERFACE "-ffreestanding")
   target_compile_options(ProjectCommonFlags INTERFACE "-nostdinc")
   target_compile_options(ProjectCommonFlags INTERFACE "-nostdlib")
   target_link_options(ProjectCommonFlags INTERFACE "-ffrestanding")
