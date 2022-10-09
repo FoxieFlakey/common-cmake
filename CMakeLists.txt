@@ -8,7 +8,7 @@ if (NOT DEFINED BUILD_LANG)
 endif()
 
 include(${CURRENT_BASE_PATH}/util.cmake)
-if (DEFINED BUILD_PROTOBUF_FILES)
+if (DEFINED BUILD_PROTOBUF_FILES AND NOT DEFINED BUILD_IS_KERNEL)
   util_protobuf_generate_c(PROTO_SRC PROTO_HEADERS ${BUILD_PROTOBUF_FILES})
 endif()
 
@@ -46,6 +46,10 @@ add_library(Project_Objects OBJECT ${BUILD_SOURCES} ${PROTO_SRC})
 
 find_package(PkgConfig REQUIRED)
 function (AddPkgConfigLib name spec)
+  if (DEFINED BUILD_IS_KERNEL)
+    message(FATAL "Not available in kernel compilation")
+  endif()
+  
   pkg_check_modules(${name} REQUIRED ${spec})
   target_link_libraries(ProjectCommonFlags INTERFACE ${${name}_LIBRARIES})
   target_include_directories(ProjectCommonFlags INTERFACE ${${name}_INCLUDE_DIRS})
@@ -56,7 +60,7 @@ endfunction()
 target_link_libraries(Project_Objects ProjectCommonFlags)
 AddDependencies()
 
-if (BUILD_IS_LIBRARY)
+if (NOT DEFINED BUILD_IS_KERNEL AND BUILD_IS_LIBRARY)
   add_library(${BUILD_LIB_NAME} SHARED)
 
   set_target_properties(${BUILD_LIB_NAME}
@@ -75,59 +79,61 @@ target_link_libraries(Executable Project_Objects)
 
 include(GNUInstallDirs)
 
-if (BUILD_INSTALL_EXECUTABLE)
-  #get_property(a TARGET Executable PROPERTY LOCATION)
-  #message(${a})
+if (NOT DEFINED BUILD_IS_KERNEL)
+  if (BUILD_INSTALL_EXECUTABLE)
+    #get_property(a TARGET Executable PROPERTY LOCATION)
+    #message(${a})
 
-  add_custom_command(
-    TARGET Executable POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy
-      $<TARGET_FILE:Executable>
-      ${PROJECT_BINARY_DIR}/${BUILD_EXE_NAME}
-  )
+    add_custom_command(
+      TARGET Executable POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        $<TARGET_FILE:Executable>
+        ${PROJECT_BINARY_DIR}/${BUILD_EXE_NAME}
+    )
 
-  install(
-    FILES ${PROJECT_BINARY_DIR}/${BUILD_EXE_NAME}
-    DESTINATION ${CMAKE_INSTALL_BINDIR}/
-    PERMISSIONS 
-      WORLD_READ    GROUP_READ    OWNER_READ      
-                                  OWNER_WRITE
-      WORLD_EXECUTE GROUP_EXECUTE OWNER_EXECUTE
-  )
-endif()
-
-if (BUILD_IS_LIBRARY) 
-  # Install library headers
-  install(
-    FILES ${BUILD_PUBLIC_HEADERS}
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
-  )
-
-  # Install library
-  install(
-    TARGETS ${BUILD_LIB_NAME}
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/
-    PERMISSIONS
-      WORLD_READ    GROUP_READ    OWNER_READ      
-                                  OWNER_WRITE
-      WORLD_EXECUTE GROUP_EXECUTE OWNER_EXECUTE
-  )
-
-  # Install pkgconfig file
-  set(PKGCONFIG_NAME ${CURRENT_BASE_PATH}/package.pc.in)
-
-  # Use project's pkgconfig instead 
-  # buildsystem provided
-  if (EXISTS ${PROJECT_SOURCE_DIR}/package.pc.in)
-    set(PKGCONFIG_NAME ${PROJECT_SOURCE_DIR}/package.pc.in)  
+    install(
+      FILES ${PROJECT_BINARY_DIR}/${BUILD_EXE_NAME}
+      DESTINATION ${CMAKE_INSTALL_BINDIR}/
+      PERMISSIONS 
+        WORLD_READ    GROUP_READ    OWNER_READ      
+                                    OWNER_WRITE
+        WORLD_EXECUTE GROUP_EXECUTE OWNER_EXECUTE
+    )
   endif()
 
-  configure_file(${PKGCONFIG_NAME}
-    ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc @ONLY)
-  install(
-    FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/
-  )
+  if (BUILD_IS_LIBRARY) 
+    # Install library headers
+    install(
+      FILES ${BUILD_PUBLIC_HEADERS}
+      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
+    )
+
+    # Install library
+    install(
+      TARGETS ${BUILD_LIB_NAME}
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/
+      PERMISSIONS
+        WORLD_READ    GROUP_READ    OWNER_READ      
+                                    OWNER_WRITE
+        WORLD_EXECUTE GROUP_EXECUTE OWNER_EXECUTE
+    )
+
+    # Install pkgconfig file
+    set(PKGCONFIG_NAME ${CURRENT_BASE_PATH}/package.pc.in)
+
+    # Use project's pkgconfig instead 
+    # buildsystem provided
+    if (EXISTS ${PROJECT_SOURCE_DIR}/package.pc.in)
+      set(PKGCONFIG_NAME ${PROJECT_SOURCE_DIR}/package.pc.in)  
+    endif()
+
+    configure_file(${PKGCONFIG_NAME}
+      ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc @ONLY)
+    install(
+      FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/
+    )
+  endif()
 endif()
 
 
