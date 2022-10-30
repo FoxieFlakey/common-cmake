@@ -10,15 +10,24 @@ set_property(TARGET ProjectCommonFlags
 
 target_compile_options(ProjectCommonFlags INTERFACE "-g")
 target_compile_options(ProjectCommonFlags INTERFACE "-fPIC")
-target_compile_options(ProjectCommonFlags INTERFACE "-O0")
-target_compile_options(ProjectCommonFlags INTERFACE "-Wall")
 target_compile_options(ProjectCommonFlags INTERFACE "-fno-common")
-target_compile_options(ProjectCommonFlags INTERFACE "-fno-omit-frame-pointer")
-target_compile_options(ProjectCommonFlags INTERFACE "-mno-omit-leaf-frame-pointer")
-target_compile_options(ProjectCommonFlags INTERFACE "-fno-optimize-sibling-calls")
+target_compile_options(ProjectCommonFlags INTERFACE "-Wall")
+
+if(BUILD_MAXIMUM_PERFORMANCE)
+  target_compile_options(ProjectCommonFlags INTERFACE "-O3")
+  target_compile_options(ProjectCommonFlags INTERFACE "-fomit-frame-pointer")
+  target_compile_options(ProjectCommonFlags INTERFACE "-momit-leaf-frame-pointer")
+  target_compile_options(ProjectCommonFlags INTERFACE "-foptimize-sibling-calls")
+else()
+  target_compile_options(ProjectCommonFlags INTERFACE "-O0") 
+  target_compile_options(ProjectCommonFlags INTERFACE "-fno-omit-frame-pointer")
+  target_compile_options(ProjectCommonFlags INTERFACE "-mno-omit-leaf-frame-pointer")
+  target_compile_options(ProjectCommonFlags INTERFACE "-fno-optimize-sibling-calls")
+endif()
+
 target_link_options(ProjectCommonFlags INTERFACE "-fPIC")
 
-if (DEFINED BUILD_IS_KERNEL)
+if (BUILD_IS_KERNEL)
   target_compile_options(ProjectCommonFlags INTERFACE "-ffreestanding")
   #target_compile_options(ProjectCommonFlags INTERFACE "-nostdinc")
   target_compile_options(ProjectCommonFlags INTERFACE "-nostdlib")
@@ -40,7 +49,7 @@ if (DEFINED BUILD_LDFLAGS)
   target_link_options(ProjectCommonFlags INTERFACE ${tmp})
 endif()
 
-if (DEFINED BUILD_IS_KERNEL)
+if (BUILD_IS_KERNEL)
   if (DEFINED CONFIG_UBSAN OR 
       DEFINED CONFIG_ASAN OR 
       DEFINED CONFIG_TSAN OR 
@@ -87,7 +96,7 @@ if (DEFINED CONFIG_MSAN)
   target_link_options(ProjectCommonFlags INTERFACE "-fsanitize=memory")
 endif()
 
-if (NOT DEFINED BUILD_IS_KERNEL)
+if (NOT BUILD_IS_KERNEL)
   target_link_libraries(ProjectCommonFlags INTERFACE BlocksRuntime)
   target_link_libraries(ProjectCommonFlags INTERFACE pthread)
 endif()

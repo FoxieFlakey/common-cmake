@@ -7,8 +7,16 @@ if (NOT DEFINED BUILD_LANG)
   set(BUILD_LANG "C")
 endif()
 
+if (NOT DEFINED BUILD_IS_KERNEL)
+  set(BUILD_IS_KERNEL NO)
+endif()
+
+if (NOT DEFINED BUILD_MAXIMUM_PERFORMANCE)
+  set(BUILD_MAXIMUM_PERFORMANCE NO)
+endif()
+
 include(${CURRENT_BASE_PATH}/util.cmake)
-if (DEFINED BUILD_PROTOBUF_FILES AND NOT DEFINED BUILD_IS_KERNEL)
+if (DEFINED BUILD_PROTOBUF_FILES AND NOT BUILD_IS_KERNEL)
   util_protobuf_generate_c(PROTO_SRC PROTO_HEADERS ${BUILD_PROTOBUF_FILES})
 endif()
 
@@ -46,7 +54,7 @@ add_library(Project_Objects OBJECT ${BUILD_SOURCES} ${PROTO_SRC})
 
 find_package(PkgConfig REQUIRED)
 function (AddPkgConfigLib name spec)
-  if (DEFINED BUILD_IS_KERNEL)
+  if (BUILD_IS_KERNEL)
     message(FATAL "Not available in kernel compilation")
   endif()
   
@@ -60,7 +68,7 @@ endfunction()
 target_link_libraries(Project_Objects ProjectCommonFlags)
 AddDependencies()
 
-if (NOT DEFINED BUILD_IS_KERNEL AND BUILD_IS_LIBRARY)
+if (NOT BUILD_IS_KERNEL AND BUILD_IS_LIBRARY)
   add_library(${BUILD_LIB_NAME} SHARED)
 
   set_target_properties(${BUILD_LIB_NAME}
@@ -79,7 +87,7 @@ target_link_libraries(Executable Project_Objects)
 
 include(GNUInstallDirs)
 
-if (NOT DEFINED BUILD_IS_KERNEL)
+if (NOT BUILD_IS_KERNEL)
   if (BUILD_INSTALL_EXECUTABLE)
     #get_property(a TARGET Executable PROPERTY LOCATION)
     #message(${a})
