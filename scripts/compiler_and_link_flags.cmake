@@ -71,6 +71,7 @@ if (DEFINED CONFIG_UBSAN)
 endif()
 
 target_compile_definitions(ProjectCommonFlags INTERFACE "PROCESSED_BY_CMAKE")
+target_compile_options(ProjectCommonFlags INTERFACE "-fmacro-prefix-map=${CMAKE_SOURCE_DIR}=.")
 
 if (DEFINED CONFIG_ASAN)
   target_compile_options(ProjectCommonFlags INTERFACE "-fsanitize-address-use-after-scope")
