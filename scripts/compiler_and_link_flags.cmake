@@ -12,6 +12,7 @@ target_compile_options(ProjectCommonFlags INTERFACE "-g")
 target_compile_options(ProjectCommonFlags INTERFACE "-fPIC")
 target_compile_options(ProjectCommonFlags INTERFACE "-fno-common")
 target_compile_options(ProjectCommonFlags INTERFACE "-Wall")
+target_compile_options(ProjectCommonFlags INTERFACE "-D_POSIX_C_SOURCE=200809L")
 
 if(BUILD_MAXIMUM_PERFORMANCE)
   target_compile_options(ProjectCommonFlags INTERFACE "-O3")
