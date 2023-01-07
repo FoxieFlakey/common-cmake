@@ -1,0 +1,127 @@
+menu "Build"
+  # These 2 to be expected to be set by program using this
+  # with `select`
+  config BUILD_IS_KERNEL
+    bool
+  config BUILD_IS_LIBRARY
+    bool
+    
+  if BUILD_IS_LIBRARY
+    menu "Library options"
+      config BUILD_INSTALL_PKGCONFIG
+        bool "Install pkgconfig file"
+    endmenu
+  endif
+   
+  config DEBUG
+    bool "Enable debugging mode"
+  
+  config BUILD_INSTALL_HEADERS
+    bool "Install development headers"
+  config BUILD_INSTALL_EXECUTABLE
+    bool "Install executable"
+  
+  config BUILD_OVERRIDE_PROJECT_FLAGS
+    bool "Override *ALL* project flags (DANGEROUS)"
+    help
+      May cause broken binary or broken compilation
+  config BUILD_OVERRIDE_CFLAGS
+    string "C flags"
+    depends on BUILD_OVERRIDE_PROJECT_FLAGS
+  config BUILD_OVERRIDE_LDFLAGS
+    string "Linker flags"
+    depends on BUILD_OVERRIDE_PROJECT_FLAGS
+  
+  # These option modifies flags
+  if !BUILD_OVERRIDE_PROJECT_FLAGS
+    config BUILD_MAXIMUM_PERFORMANCE
+      bool "Enable optimization for maximum performance"
+    
+    config BUILD_CFLAGS
+      string "Additional C flags"
+    
+    config BUILD_LDFLAGS
+      string "Additional linker flags"
+   
+    config BUILD_SPECIAL_INSTRUMENTATION_ENABLED
+      depends on !BUILD_IS_KERNEL 
+
+    config BUILD_GENERATE_DEBUG_INFO
+      bool "Generate debug info"
+      default y if DEBUG
+
+    choice
+      prompt "Link Time Optimization (LTO)"
+      default BUILD_LTO_NONE
+      
+      config BUILD_LTO_NONE
+        bool "None"
+      config BUILD_LTO_THIN
+        bool "ThinLTO"
+      config BUILD_LTO_FULL
+        bool "FullLTO"
+    endchoice
+
+    choice
+      prompt "Additional sanitizer"
+      depends on DEBUG && BUILD_SPECIAL_INSTRUMENTATION_ENABLED
+      optional
+
+      config BUILD_ASAN
+        bool "Enable Address Sanitizer"
+      config BUILD_TSAN
+        bool "Enable Thread Sanitizer" 
+      config BUILD_MSAN
+        bool "Enable Memory Sanitizer"
+    endchoice
+
+    menu "Address Sanitizer"
+      depends on BUILD_ASAN
+
+      config BUILD_ASAN_OPTS
+        string "Default ASAN options"
+        default "fast_unwind_on_malloc=0:detect_invalid_pointer_pairs=10:strict_string_checks=1:strict_init_order=1:check_initialization_order=1:print_stats=1:detect_stack_use_after_return=1:atexit=1" 
+    endmenu   
+
+    menu "Memory Sanitizer"  
+      depends on BUILD_MSAN
+
+      config BUILD_MSAN_OPTS
+        string "Default MSAN options"
+        default ""
+    endmenu
+
+    menu "Thread Sanitizer"  
+      depends on BUILD_TSAN
+
+      config BUILD_TSAN_OPTS
+        string "Default TSAN options"
+        default "second_deadlock_stack=1"
+    endmenu
+
+    config BUILD_LLVM_XRAY
+      depends on BUILD_SPECIAL_INSTRUMENTATION_ENABLED
+      bool "Enable LLVM's XRay instrumentation"
+      default n
+
+    menu "LLVM XRay"
+      depends on BUILD_LLVM_XRAY
+
+      config BUILD_LLVM_XRAY_OPTS
+        string "Default XRay options"
+        default "xray_mode=xray-basic:patch_premain=true:verbosity=1"
+    endmenu
+
+    config BUILD_UBSAN
+      bool "Enable Undefined behavior Sanitizer"
+      default n
+
+    menu "Undefined Sanitizer"
+      depends on BUILD_UBSAN
+
+      config BUILD_UBSAN_OPTS
+        string "Default UBSAN options"
+        default "print_stacktrace=1:suppressions=suppressions/UBSan.supp"
+    endmenu
+  endif
+endmenu

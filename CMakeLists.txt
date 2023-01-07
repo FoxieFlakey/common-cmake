@@ -1,34 +1,22 @@
 cmake_minimum_required(VERSION 3.18)
-
-include(build.cmake)
 set(CURRENT_BASE_PATH "${CMAKE_CURRENT_LIST_DIR}")
-
-if (NOT DEFINED BUILD_LANG)
-  set(BUILD_LANG "C")
-endif()
-
-if (NOT DEFINED BUILD_IS_KERNEL)
-  set(BUILD_IS_KERNEL NO)
-endif()
-
-if (NOT DEFINED BUILD_MAXIMUM_PERFORMANCE)
-  set(BUILD_MAXIMUM_PERFORMANCE NO)
-endif()
-
-include(${CURRENT_BASE_PATH}/util.cmake)
-if (DEFINED BUILD_PROTOBUF_FILES AND NOT BUILD_IS_KERNEL)
-  util_protobuf_generate_c(PROTO_SRC PROTO_HEADERS ${BUILD_PROTOBUF_FILES})
-endif()
-
-# Source of truth for version is 
-# NOT HERE its in Kconfig file
-project(${BUILD_PROJECT_NAME} VERSION 1.0.0
-       LANGUAGES ${BUILD_LANG})
 
 if (NOT CMAKE_C_COMPILER_ID MATCHES "Clang")
   message(FATAL_ERROR "Non clang compiler unsupported")
 endif()
 
+include(build.cmake)
+include(${CURRENT_BASE_PATH}/util.cmake)
+
+PreConfigurationLoad()
+include(${CURRENT_BASE_PATH}/scripts/process_dot_config.cmake)
+PostConfigurationLoad()
+
+# Source of truth for version is 
+# NOT HERE its in Kconfig file
+project(${BUILD_PROJECT_NAME} VERSION 1.0.0
+       LANGUAGES ${BUILD_LANG})
+       
 # C standard checks
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -41,7 +29,7 @@ configure_file(
   ${PROJECT_BINARY_DIR}/suppressions/UBSan.supp
 )
 
-include(${CURRENT_BASE_PATH}/scripts/process_dot_config.cmake)
+util_protobuf_generate_c(PROTO_SRC PROTO_HEADERS ${BUILD_PROTOBUF_FILES})
 include(${CURRENT_BASE_PATH}/scripts/compiler_and_link_flags.cmake)
 
 set(BUILD_LIB_NAME ${PROJECT_NAME})
@@ -54,7 +42,7 @@ add_library(Project_Objects OBJECT ${BUILD_SOURCES} ${PROTO_SRC})
 
 find_package(PkgConfig REQUIRED)
 function (AddPkgConfigLib name spec)
-  if (BUILD_IS_KERNEL)
+  if (DEFINED CONFIG_BUILD_IS_KERNEL)
     message(FATAL "Not available in kernel compilation")
   endif()
   
@@ -64,11 +52,10 @@ function (AddPkgConfigLib name spec)
   target_compile_options(ProjectCommonFlags INTERFACE ${${name}_CFLAGS_OTHER})
 endfunction()
 
-## Deps here ##
 target_link_libraries(Project_Objects ProjectCommonFlags)
 AddDependencies()
 
-if (NOT BUILD_IS_KERNEL AND BUILD_IS_LIBRARY)
+if (DEFINED CONFIG_BUILD_IS_LIBRARY)
   add_library(${BUILD_LIB_NAME} SHARED)
 
   set_target_properties(${BUILD_LIB_NAME}
@@ -85,47 +72,39 @@ add_executable(Executable ${BUILD_EXE_SOURCES})
 target_link_libraries(Executable ProjectCommonFlags)
 target_link_libraries(Executable Project_Objects)
 
+# Installation section
 include(GNUInstallDirs)
 
-if (NOT BUILD_IS_KERNEL)
-  if (BUILD_INSTALL_EXECUTABLE)
-    #get_property(a TARGET Executable PROPERTY LOCATION)
-    #message(${a})
+if (DEFINED CONFIG_BUILD_INSTALL_EXECUTABLE)
+  add_custom_command(
+    TARGET Executable POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy
+      $<TARGET_FILE:Executable>
+      ${PROJECT_BINARY_DIR}/${BUILD_EXE_NAME}
+  )
 
-    add_custom_command(
-      TARGET Executable POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:Executable>
-        ${PROJECT_BINARY_DIR}/${BUILD_EXE_NAME}
-    )
+  install(
+    FILES ${PROJECT_BINARY_DIR}/${BUILD_EXE_NAME}
+    DESTINATION ${CMAKE_INSTALL_BINDIR}/
+    PERMISSIONS 
+      WORLD_READ    GROUP_READ    OWNER_READ      
+                                  OWNER_WRITE
+      WORLD_EXECUTE GROUP_EXECUTE OWNER_EXECUTE
+  )
+endif()
 
-    install(
-      FILES ${PROJECT_BINARY_DIR}/${BUILD_EXE_NAME}
-      DESTINATION ${CMAKE_INSTALL_BINDIR}/
-      PERMISSIONS 
-        WORLD_READ    GROUP_READ    OWNER_READ      
-                                    OWNER_WRITE
-        WORLD_EXECUTE GROUP_EXECUTE OWNER_EXECUTE
-    )
-  endif()
+if (DEFINED CONFIG_BUILD_IS_LIBRARY) 
+  # Install library
+  install(
+    TARGETS ${BUILD_LIB_NAME}
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/
+    PERMISSIONS
+      WORLD_READ    GROUP_READ    OWNER_READ      
+                                  OWNER_WRITE
+      WORLD_EXECUTE GROUP_EXECUTE OWNER_EXECUTE
+  )
 
-  if (BUILD_IS_LIBRARY) 
-    # Install library headers
-    install(
-      FILES ${BUILD_PUBLIC_HEADERS}
-      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
-    )
-
-    # Install library
-    install(
-      TARGETS ${BUILD_LIB_NAME}
-      DESTINATION ${CMAKE_INSTALL_LIBDIR}/
-      PERMISSIONS
-        WORLD_READ    GROUP_READ    OWNER_READ      
-                                    OWNER_WRITE
-        WORLD_EXECUTE GROUP_EXECUTE OWNER_EXECUTE
-    )
-
+  if (DEFINED CONFIG_BUILD_INSTALL_PKGCONFIG)
     # Install pkgconfig file
     set(PKGCONFIG_NAME ${CURRENT_BASE_PATH}/package.pc.in)
 
@@ -144,6 +123,13 @@ if (NOT BUILD_IS_KERNEL)
   endif()
 endif()
 
+if (DEFINED CONFIG_BUILD_INSTALL_HEADERS)
+  # Install library headers
+  install(
+    FILES ${BUILD_PUBLIC_HEADERS}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
+  )
+endif()
 
 
 
