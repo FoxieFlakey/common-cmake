@@ -3,7 +3,7 @@
 # Create header
 file(READ ${PROJECT_SOURCE_DIR}/.config filedata)
 string(REGEX REPLACE "#" "//" filedata "${filedata}")
-string(REGEX REPLACE "\nCONFIG" "#define CONFIG" filedata "${filedata}")
+string(REGEX REPLACE "\nCONFIG" "\n#define CONFIG" filedata "${filedata}")
 string(REGEX REPLACE "(#define[^=]+)=y\n" "\\1 1\n" filedata "${filedata}")
 string(REGEX REPLACE "(#define[^=]+)=n\n" "\\1 0\n" filedata "${filedata}")
 string(REGEX REPLACE "(#define[^=]+)=([^\n]+)\n" "\\1 \\2\n" filedata "${filedata}")
@@ -11,7 +11,7 @@ file(WRITE ${PROJECT_BINARY_DIR}/src/kconfig.h "${filedata}")
 
 # Create cmake config
 file(READ ${PROJECT_SOURCE_DIR}/.config filedata)
-string(REGEX REPLACE "\nCONFIG" "set(CONFIG" filedata "${filedata}")
+string(REGEX REPLACE "\nCONFIG" "\nset(CONFIG" filedata "${filedata}")
 string(REGEX REPLACE "(set[^=]+)=y\n" "\\1, ON)\n" filedata "${filedata}")
 string(REGEX REPLACE "(set[^=]+)=n\n" "\\1, OFF)\n" filedata "${filedata}")
 string(REGEX REPLACE "(set[^=]+)=([^\n]+)\n" "\\1 \\2)\n" filedata "${filedata}")
