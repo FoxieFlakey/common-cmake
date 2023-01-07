@@ -1,7 +1,6 @@
 # https://gitlab.kitware.com/cmake/cmake/-/issues/17151
 function(util_protobuf_generate_c SRCS HDRS)
   if(NOT ARGN)
-    message(SEND_ERROR "Error: PROTOBUF_GENERATE_C() called without any proto files")
     return()
   endif()
 
