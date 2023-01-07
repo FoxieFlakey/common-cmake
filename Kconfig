@@ -44,7 +44,8 @@ menu "Build"
       string "Additional linker flags"
    
     config BUILD_SPECIAL_INSTRUMENTATION_ENABLED
-      depends on !BUILD_IS_KERNEL 
+      bool
+      default y if !BUILD_IS_KERNEL 
 
     config BUILD_GENERATE_DEBUG_INFO
       bool "Generate debug info"
