@@ -5,6 +5,8 @@ menu "Build"
     bool
   config BUILD_IS_LIBRARY
     bool
+  config BUILD_HAS_EXECUTABLE
+    bool
     
   if BUILD_IS_LIBRARY
     menu "Library options"
@@ -20,6 +22,7 @@ menu "Build"
     bool "Install development headers"
   config BUILD_INSTALL_EXECUTABLE
     bool "Install executable"
+    depends on BUILD_HAS_EXECUTABLE
   
   config BUILD_OVERRIDE_PROJECT_FLAGS
     bool "Override *ALL* project flags (DANGEROUS)"
