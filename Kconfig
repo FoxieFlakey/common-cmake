@@ -12,6 +12,7 @@ menu "Build"
     menu "Library options"
       config BUILD_INSTALL_PKGCONFIG
         bool "Install pkgconfig file"
+        default y
     endmenu
   endif
    
