@@ -67,6 +67,7 @@ if (DEFINED CONFIG_BUILD_IS_LIBRARY)
   )
   
   target_link_libraries(${BUILD_LIB_NAME} Project_Objects)
+  target_link_libraries(${BUILD_LIB_NAME_STATIC} Project_Objects)
 endif()
 ###############
 
