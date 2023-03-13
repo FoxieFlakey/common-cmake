@@ -33,6 +33,7 @@ util_protobuf_generate_c(PROTO_SRC PROTO_HEADERS ${BUILD_PROTOBUF_FILES})
 include(${CURRENT_BASE_PATH}/scripts/compiler_and_link_flags.cmake)
 
 set(BUILD_LIB_NAME ${PROJECT_NAME})
+set(BUILD_LIB_NAME_STATIC ${PROJECT_NAME}_Static)
 set(BUILD_EXE_NAME ${PROJECT_NAME}_${CONFIG_VERSION_MAJOR}.${CONFIG_VERSION_MINOR})
 
 configure_file(src/config.h src/processed_config.h)
@@ -57,6 +58,7 @@ AddDependencies()
 
 if (DEFINED CONFIG_BUILD_IS_LIBRARY)
   add_library(${BUILD_LIB_NAME} SHARED)
+  add_library(${BUILD_LIB_NAME_STATIC} STATIC)
 
   set_target_properties(${BUILD_LIB_NAME}
     PROPERTIES
@@ -97,6 +99,14 @@ if (DEFINED CONFIG_BUILD_IS_LIBRARY)
   # Install library
   install(
     TARGETS ${BUILD_LIB_NAME}
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/
+    PERMISSIONS
+      WORLD_READ    GROUP_READ    OWNER_READ      
+                                  OWNER_WRITE
+      WORLD_EXECUTE GROUP_EXECUTE OWNER_EXECUTE
+  )
+  install(
+    TARGETS ${BUILD_LIB_NAME_STATIC}
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/
     PERMISSIONS
       WORLD_READ    GROUP_READ    OWNER_READ      
