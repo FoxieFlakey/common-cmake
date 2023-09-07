@@ -4,10 +4,6 @@ include(${CURRENT_BASE_PATH}/scripts/process_dot_config.cmake)
 
 add_library(ProjectCommonFlags INTERFACE)
 
-set_property(TARGET ProjectCommonFlags
-  PROPERTY POSITION_INDEPENDENT_CODE YES
-)
-
 target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_BINARY_DIR}")
 target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_BINARY_DIR}/src")
 target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_SOURCE_DIR}/src")
@@ -22,11 +18,15 @@ if (DEFINED BUILD_OVERRIDE_PROJECT_FLAGS)
   target_compile_options(ProjectCommonFlags INTERFACE ${tmp})
 else()
   # Default options
-  target_compile_options(ProjectCommonFlags INTERFACE "-fPIC")
+  
+  if (DEFINED BUILD_CAN_RELOCATE)
+    target_compile_options(ProjectCommonFlags INTERFACE "-fPIC")
+    target_link_options(ProjectCommonFlags INTERFACE "-fPIC")
+  endif()
+  
   target_compile_options(ProjectCommonFlags INTERFACE "-fno-common")
   target_compile_options(ProjectCommonFlags INTERFACE "-Wall")
   target_compile_options(ProjectCommonFlags INTERFACE "-fvisibility=hidden")
-  target_link_options(ProjectCommonFlags INTERFACE "-fPIC")
   target_compile_options(ProjectCommonFlags INTERFACE "-fmacro-prefix-map=${CMAKE_SOURCE_DIR}=.")
 endif()
 
