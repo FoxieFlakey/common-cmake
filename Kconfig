@@ -2,7 +2,8 @@ menu "Build"
   config BUILD_IS_LIBRARY
     bool
     depends on BUILD_CAN_BE_LIBRARY
-    select BUILD_GENERATES_USERSPACE_EXECUTABLE
+    select BUILD_GENERATES_EXECUTABLE
+    select BUILD_USERSPACE
   
   # BUILD_IS_KERNEL and BUILD_IS_EXECUTABLE
   # are mutually exclusive
@@ -15,23 +16,13 @@ menu "Build"
   config BUILD_IS_EXECUTABLE
     bool
     select BUILD_CAN_BE_LIBRARY
-    select BUILD_GENERATES_USERSPACE_EXECUTABLE
+    select BUILD_GENERATES_EXECUTABLE
+    select BUILD_USERSPACE
     select BUILD_CAN_INSTALL_AS_USERSPACE_EXECUTABLE
   
   source "buildsystem/Kconfig.kernel"
   
   # Anything below wasn't meant to be set by application
-  config BUILD_GENERATES_USERSPACE_EXECUTABLE
-    bool
-    select BUILD_GENERATES_EXECUTABLE
-    select CONFIG_BUILD_HAVE_CLANG_BLOCKS_SUPPORT
-    select BUILD_USERSPACE
-    select BUILD_HAVE_LLVM_ASAN
-    select BUILD_HAVE_LLVM_TSAN
-    select BUILD_HAVE_LLVM_MSAN
-    select BUILD_HAVE_LLVM_UBSAN
-    select BUILD_HAVE_LLVM_XRAY
-    
   config BUILD_GENERATES_EXECUTABLE
     bool
   config BUILD_CAN_INSTALL_AS_USERSPACE_EXECUTABLE
@@ -42,6 +33,14 @@ menu "Build"
     bool
   config BUILD_USERSPACE
     bool
+    select BUILD_CAN_RELOCATE
+    select CONFIG_BUILD_HAVE_CLANG_BLOCKS_SUPPORT
+    select BUILD_HAVE_LLVM_ASAN
+    select BUILD_HAVE_LLVM_TSAN
+    select BUILD_HAVE_LLVM_MSAN
+    select BUILD_HAVE_LLVM_UBSAN
+    select BUILD_HAVE_LLVM_XRAY
+  
   config BUILD_HAVE_CLANG_BLOCKS_SUPPORT
     bool
   

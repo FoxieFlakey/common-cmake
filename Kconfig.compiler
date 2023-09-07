@@ -1,5 +1,8 @@
 
 menu "Compiler"
+  config BUILD_CAN_RELOCATE
+    bool
+  
   config BUILD_OVERRIDE_PROJECT_FLAGS
     bool "Override *ALL* project flags (DANGEROUS)"
     help
