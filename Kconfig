@@ -20,6 +20,9 @@ menu "Build"
     select BUILD_USERSPACE
     select BUILD_CAN_INSTALL_AS_USERSPACE_EXECUTABLE
   
+  config BUILD_ALLOW_GNU_DIALECT
+    bool
+  
   source "buildsystem/Kconfig.kernel"
   
   # Anything below wasn't meant to be set by application
