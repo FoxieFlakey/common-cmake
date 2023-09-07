@@ -23,12 +23,6 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Suppression files (abusing configure)
-configure_file(
-  ${PROJECT_SOURCE_DIR}/suppressions/UBSan.supp 
-  ${PROJECT_BINARY_DIR}/suppressions/UBSan.supp
-)
-
 util_protobuf_generate_c(PROTO_SRC PROTO_HEADERS ${BUILD_PROTOBUF_FILES})
 include(${CURRENT_BASE_PATH}/scripts/compiler_and_link_flags.cmake)
 
@@ -43,10 +37,6 @@ add_library(Project_Objects OBJECT ${BUILD_SOURCES} ${PROTO_SRC})
 
 find_package(PkgConfig REQUIRED)
 function (AddPkgConfigLib name spec)
-  if (DEFINED CONFIG_BUILD_IS_KERNEL)
-    message(FATAL "Not available in kernel compilation")
-  endif()
-  
   pkg_check_modules(${name} REQUIRED ${spec})
   target_link_libraries(ProjectCommonFlags INTERFACE ${${name}_LIBRARIES})
   target_include_directories(ProjectCommonFlags INTERFACE ${${name}_INCLUDE_DIRS})
