@@ -1,0 +1,26 @@
+
+# Kernel related stuffs
+# Sanitizers support (selected by applications)
+config BUILD_KERNEL_HAVE_LLVM_TSAN
+  bool
+  select BUILD_HAVE_LLVM_TSAN
+  depends on BUILD_IS_KERNEL
+config BUILD_KERNEL_HAVE_LLVM_MSAN
+  bool
+  select BUILD_HAVE_LLVM_MSAN
+  depends on BUILD_IS_KERNEL
+config BUILD_KERNEL_HAVE_LLVM_ASAN
+  bool
+  select BUILD_HAVE_LLVM_ASAN
+  depends on BUILD_IS_KERNEL
+config BUILD_KERNEL_HAVE_LLVM_UBSAN
+  bool
+  select BUILD_HAVE_LLVM_UBSAN
+  depends on BUILD_IS_KERNEL
+config BUILD_KERNEL_HAVE_LLVM_XRAY
+  bool
+  select BUILD_HAVE_LLVM_XRAY
+  depends on BUILD_IS_KERNEL
+config BUILD_KERNEL_HAVE_CLANG_BLOCKS_SUPPORT
+  bool
+  select BUILD_HAVE_CLANG_BLOCKS_SUPPORT

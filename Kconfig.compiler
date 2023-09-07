@@ -1,0 +1,43 @@
+
+menu "Compiler"
+  config BUILD_OVERRIDE_PROJECT_FLAGS
+    bool "Override *ALL* project flags (DANGEROUS)"
+    help
+      May cause broken binary or broken compilation
+  config BUILD_OVERRIDE_CFLAGS
+    string "C flags"
+    depends on BUILD_OVERRIDE_PROJECT_FLAGS
+  config BUILD_OVERRIDE_LDFLAGS
+    string "Linker flags"
+    depends on BUILD_OVERRIDE_PROJECT_FLAGS
+
+  # These option modifies flags
+  if !BUILD_OVERRIDE_PROJECT_FLAGS
+    config BUILD_MAXIMUM_PERFORMANCE
+      bool "Enable optimization for maximum performance"
+    
+    config BUILD_CFLAGS
+      string "Additional C flags"
+    
+    config BUILD_LDFLAGS
+      string "Additional linker flags"
+    
+    config BUILD_GENERATE_DEBUG_INFO
+      bool "Generate debug info"
+      default y if DEBUG
+
+    choice
+      prompt "Link Time Optimization (LTO)"
+      default BUILD_LTO_NONE
+      
+      config BUILD_LTO_NONE
+        bool "None"
+      config BUILD_LTO_THIN
+        bool "ThinLTO"
+      config BUILD_LTO_FULL
+        bool "FullLTO"
+    endchoice
+    
+    source "buildsystem/Kconfig.sanitizer"
+  endif
+endmenu

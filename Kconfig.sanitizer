@@ -1,0 +1,76 @@
+
+config BUILD_HAVE_LLVM_TSAN
+  bool
+config BUILD_HAVE_LLVM_MSAN
+  bool
+config BUILD_HAVE_LLVM_ASAN
+  bool
+config BUILD_HAVE_LLVM_UBSAN
+  bool
+config BUILD_HAVE_LLVM_XRAY
+  bool
+
+choice
+  prompt "Additional sanitizer"
+  optional
+
+  config BUILD_ASAN
+    bool "Enable Address Sanitizer"
+    depends on BUILD_HAVE_LLVM_ASAN
+  config BUILD_TSAN
+    bool "Enable Thread Sanitizer" 
+    depends on BUILD_HAVE_LLVM_TSAN
+  config BUILD_MSAN
+    bool "Enable Memory Sanitizer"
+    depends on BUILD_HAVE_LLVM_MSAN
+endchoice
+
+menu "Address Sanitizer"
+  depends on BUILD_ASAN
+
+  config BUILD_ASAN_OPTS
+    string "Default ASAN options"
+    default "fast_unwind_on_malloc=0:detect_invalid_pointer_pairs=10:strict_string_checks=1:strict_init_order=1:check_initialization_order=1:print_stats=1:detect_stack_use_after_return=1:atexit=1" 
+endmenu   
+
+menu "Memory Sanitizer"  
+  depends on BUILD_MSAN
+
+  config BUILD_MSAN_OPTS
+    string "Default MSAN options"
+    default ""
+endmenu
+
+menu "Thread Sanitizer"  
+  depends on BUILD_TSAN
+
+  config BUILD_TSAN_OPTS
+    string "Default TSAN options"
+    default "second_deadlock_stack=1"
+endmenu
+
+config BUILD_LLVM_XRAY
+  bool "Enable LLVM's XRay instrumentation"
+  depends on BUILD_HAVE_LLVM_XRAY
+  default n
+
+menu "LLVM XRay"
+  depends on BUILD_LLVM_XRAY
+
+  config BUILD_LLVM_XRAY_OPTS
+    string "Default XRay options"
+    default "xray_mode=xray-basic:patch_premain=true:verbosity=1"
+endmenu
+
+config BUILD_UBSAN
+  bool "Enable Undefined behavior Sanitizer"
+  depends on BUILD_HAVE_LLVM_UBSAN
+  default n
+
+menu "Undefined Sanitizer"
+  depends on BUILD_UBSAN
+
+  config BUILD_UBSAN_OPTS
+    string "Default UBSAN options"
+    default "print_stacktrace=1:suppressions=suppressions/UBSan.supp"
+endmenu
