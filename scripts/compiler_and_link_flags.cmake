@@ -33,7 +33,7 @@ else()
   endif()
   
   target_compile_options(ProjectCommonFlags INTERFACE "-Wa,-x")
-  target_compile_options("-Wa,assembler-with-cpp")
+  target_compile_options(ProjectCommonFlags INTERFACE "-Wa,assembler-with-cpp")
   target_compile_options(ProjectCommonFlags INTERFACE "-fno-common")
   target_compile_options(ProjectCommonFlags INTERFACE "-Wall")
   target_compile_options(ProjectCommonFlags INTERFACE "-fvisibility=hidden")
