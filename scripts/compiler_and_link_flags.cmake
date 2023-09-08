@@ -20,8 +20,11 @@ else()
   # Default options
   
   if (DEFINED BUILD_CAN_RELOCATE)
-    target_compile_options(ProjectCommonFlags INTERFACE "-fPIC")
-    target_link_options(ProjectCommonFlags INTERFACE "-fPIC")
+    target_compile_options(ProjectCommonFlags INTERFACE "-fpic")
+    target_link_options(ProjectCommonFlags INTERFACE "-fpic")
+  else()
+    target_compile_options(ProjectCommonFlags INTERFACE "-fno-pic")
+    target_link_options(ProjectCommonFlags INTERFACE "-fno-pic")
   endif()
   
   target_compile_options(ProjectCommonFlags INTERFACE "-fno-common")
