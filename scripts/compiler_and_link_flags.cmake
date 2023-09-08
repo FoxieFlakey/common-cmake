@@ -32,7 +32,7 @@ else()
     target_link_options(ProjectCommonFlags INTERFACE "-fno-pic")
   endif()
   
-  target_compile_options(ProjectCommonFlags INTERFACE "-Wa,-x,assembler-with-cpp")
+  target_compile_options(ProjectCommonFlags INTERFACE "-Xassembler -x -Xassembler assembler-with-cpp")
   target_compile_options(ProjectCommonFlags INTERFACE "-fno-common")
   target_compile_options(ProjectCommonFlags INTERFACE "-Wall")
   target_compile_options(ProjectCommonFlags INTERFACE "-fvisibility=hidden")
