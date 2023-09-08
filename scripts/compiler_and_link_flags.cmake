@@ -10,7 +10,7 @@ target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_SOURCE_DIR}/s
 target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_SOURCE_DIR}/include")
 target_include_directories(ProjectCommonFlags INTERFACE ${BUILD_INCLUDE_DIRS})
 
-target_compile_options(ProjectCommonFlags INTERFACE "-x assembler-with-cpp")
+target_compile_options(ProjectCommonFlags INTERFACE "-Xassembler,-x -Xassembler,assembler-with-cpp")
 
 if (DEFINED BUILD_OVERRIDE_PROJECT_FLAGS)
   separate_arguments(tmp UNIX_COMMAND ${CONFIG_BUILD_OVERRIDE_LDFLAGS})
