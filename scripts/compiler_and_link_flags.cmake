@@ -10,8 +10,6 @@ target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_SOURCE_DIR}/s
 target_include_directories(ProjectCommonFlags INTERFACE "${PROJECT_SOURCE_DIR}/include")
 target_include_directories(ProjectCommonFlags INTERFACE ${BUILD_INCLUDE_DIRS})
 
-target_compile_options(ProjectCommonFlags INTERFACE "-Xassembler,-x -Xassembler,assembler-with-cpp")
-
 if (DEFINED BUILD_OVERRIDE_PROJECT_FLAGS)
   separate_arguments(tmp UNIX_COMMAND ${CONFIG_BUILD_OVERRIDE_LDFLAGS})
   target_link_options(ProjectCommonFlags INTERFACE ${tmp})
@@ -34,6 +32,7 @@ else()
     target_link_options(ProjectCommonFlags INTERFACE "-fno-pic")
   endif()
   
+  target_compile_options(ProjectCommonFlags INTERFACE "-Wa,-x -Wa,assembler-with-cpp")
   target_compile_options(ProjectCommonFlags INTERFACE "-fno-common")
   target_compile_options(ProjectCommonFlags INTERFACE "-Wall")
   target_compile_options(ProjectCommonFlags INTERFACE "-fvisibility=hidden")
