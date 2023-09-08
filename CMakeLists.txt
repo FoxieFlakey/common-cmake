@@ -15,7 +15,7 @@ PostConfigurationLoad()
 # Source of truth for version is 
 # NOT HERE its in Kconfig file
 project(${BUILD_PROJECT_NAME} VERSION 1.0.0
-       LANGUAGES ${BUILD_LANG})
+       LANGUAGES ${BUILD_LANG} ASM)
        
 # C standard checks
 set(CMAKE_C_STANDARD 23)
