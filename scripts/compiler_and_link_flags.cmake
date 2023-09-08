@@ -18,8 +18,13 @@ if (DEFINED BUILD_OVERRIDE_PROJECT_FLAGS)
   target_compile_options(ProjectCommonFlags INTERFACE ${tmp})
 else()
   # Default options
+  # Kernel don't have luxury of dynamic linker UwU
+  if (DEFINED CONFIG_BUILD_IS_KERNEL)
+    target_compile_options(ProjectCommonFlags INTERFACE "-static")
+    target_link_options(ProjectCommonFlags INTERFACE "-static")
+  endif()
   
-  if (DEFINED BUILD_CAN_RELOCATE)
+  if (DEFINED CONFIG_BUILD_CAN_RELOCATE)
     target_compile_options(ProjectCommonFlags INTERFACE "-fpic")
     target_link_options(ProjectCommonFlags INTERFACE "-fpic")
   else()
