@@ -65,7 +65,7 @@ if (DEFINED CONFIG_BUILD_USERSPACE)
   target_link_libraries(ProjectCommonFlags INTERFACE pthread)
 endif()
 
-if (DEFINED CONFIG_BUILD_HAVE_CLANG_BLOCKS_SUPPORT)
+if (DEFINED CONFIG_BUILD_NEED_CLANG_BLOCKS_SUPPORT)
   target_compile_options(ProjectCommonFlags INTERFACE "-fblocks")
   if (DEFINED CONFIG_BUILD_USERSPACE)
     target_link_libraries(ProjectCommonFlags INTERFACE BlocksRuntime)

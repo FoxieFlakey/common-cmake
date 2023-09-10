@@ -22,6 +22,9 @@ menu "Build"
   config BUILD_ALLOW_GNU_DIALECT
     bool
   
+  config BUILD_NEED_CLANG_BLOCKS_SUPPORT
+    bool
+  
   source "buildsystem/Kconfig.kernel"
   
   # Anything below wasn't meant to be set by application
@@ -40,9 +43,6 @@ menu "Build"
     select BUILD_HAVE_LLVM_MSAN
     select BUILD_HAVE_LLVM_UBSAN
     select BUILD_HAVE_LLVM_XRAY
-  
-  config BUILD_HAVE_CLANG_BLOCKS_SUPPORT
-    bool
   
   if BUILD_IS_LIBRARY
     menu "Library options"
